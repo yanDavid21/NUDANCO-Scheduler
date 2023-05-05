@@ -11,7 +11,9 @@ In this project directory:
 
 Using the command line, run the script and give the file name of a dance roster. The dance roster should be a csv files (spreadsheets) that contains the names of the dances in the first row. And the names of the dances for each dance in the respective column. Example dance roster csv files can be found in the data/ folder.
 
-Note please install python if you do not have it installed. Mac users, you should install python3 and use the command `python3` instead of `python` since that usually refers to python 2.
+Note: Please install python if you do not have it installed. Mac users, you should install python3 and use the command `python3` instead of `python` since that usually refers to python 2.
+
+Tip: You can run the script multiple times as it is non-deterministic, aka. generates a random/different valid schedule each time. So if you need some certain dances to be separated beyond being an overlapping dance, run the script multiple times.
 
 Example output:
 
