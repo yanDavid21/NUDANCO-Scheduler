@@ -1,39 +1,26 @@
-import sys
-from csv_parser import DanceSplitParser
-from utils import convert_dict_to_graph_matrix, convert_hamilton_path_to_dance_names, get_complement_of_graph, get_hamilton_path_from_graph, partition_dict
-import random
-import os
-import sys
-from args_parser import ArgParser
+from graph import DanceGraph
+from utils import get_random_partition, parse_dance_source_file, process_and_print_result
 
 MAX_ITERATION_ATTEMPTS = 100000
 
 
 def main():
-    parser = DanceSplitParser(ArgParser().get_file_name())
-    dance_splits_dict, dance_splits_dict_keys = parser.as_dictionary(
-        parser.dance_splits)
+    dance_splits, dance_splits_keys = parse_dance_source_file()
 
     for _ in range(MAX_ITERATION_ATTEMPTS):
-        random.shuffle(dance_splits_dict_keys)
-        dance_splits_dict_1, dance_splits_dict_2, dance_splits_dict_keys_1, dance_splits_dict_keys_2 = partition_dict(
-            dance_splits_dict, dance_splits_dict_keys)
+        partition_1, partition_2 = get_random_partition(
+            dance_splits, dance_splits_keys)
 
-        graph_matrix_1 = get_complement_of_graph(
-            convert_dict_to_graph_matrix(dance_splits_dict_1))
-        path_1 = get_hamilton_path_from_graph(graph_matrix_1, [])
+        graph_matrix_1 = DanceGraph(
+            dance_dict=partition_1.dict).get_complement()
+        path_1 = graph_matrix_1.get_hamilton_path()
 
-        graph_matrix_2 = get_complement_of_graph(
-            convert_dict_to_graph_matrix(dance_splits_dict_2))
-        path_2 = get_hamilton_path_from_graph(graph_matrix_2, [])
+        graph_matrix_2 = DanceGraph(
+            dance_dict=partition_2.dict).get_complement()
+        path_2 = graph_matrix_2.get_hamilton_path()
 
-        if (path_1 and path_2):
-            print(convert_hamilton_path_to_dance_names(
-                path_1, dance_splits_dict_keys_1))
-            print("Intermission")
-            print(convert_hamilton_path_to_dance_names(
-                path_2, dance_splits_dict_keys_2))
-            sys.exit()
+        process_and_print_result(path_1, path_2, partition_1, partition_2)
+    print("Could not find valid schedule, try again.")
 
 
 if __name__ == "__main__":
